@@ -51,7 +51,7 @@ int main(int argc, char *argv){
 	fclose(fp);
 	free(line);
 
-	int top3_total;
+	int top3_total = 0;
 
 	for(int i = 0; i < LENGTH; i++){
 		top3_total += top3[i];
