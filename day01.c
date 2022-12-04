@@ -22,17 +22,17 @@ void process_top3(int v){
 	}
 }
 
-int main(int argc, char *argv){
+int main(int argc, char* argv){
 
-	char* filename = "inputday01";
-	FILE *fp = fopen(filename, "r");
-
-	char *line = NULL;
-	size_t len = 0;
-
-	int current_max, current_sum, value = 0;
+	int current_max, current_sum, current_value = 0;
 
 	initialize_top3();
+
+	char* line = NULL;
+	size_t len = 0;
+
+	char* filename = "inputday01";
+	FILE* fp = fopen(filename, "r");
 
 	while(getline(&line, &len, fp) != -1) {
 		if((char) *line == '\n'){
@@ -43,8 +43,8 @@ int main(int argc, char *argv){
 			current_sum = 0;
 		}
 		else{
-			value = atoi(line);
-			current_sum += value;
+			current_value = atoi(line);
+			current_sum += current_value;
 		}
 	}
 
@@ -57,6 +57,7 @@ int main(int argc, char *argv){
 		top3_total += top3[i];
 	}
 
+	printf("max: %d\n", current_max);
 	printf("top 3 summed: %d\n", top3_total);
 
 	return 0;
