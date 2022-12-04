@@ -45,10 +45,34 @@ int rps(char c1, char c2){
 	}
 }
 
+int rps2(char c1, char c2){
+	int v1 = get_position(c1, hand1);
+
+	if(c2 == 'X'){
+		if(v1 == ROCK){
+			return SCISSORS + LOSS;
+		}
+		if(v1 == SCISSORS){
+			return PAPER + LOSS;
+		}
+		return ROCK + LOSS;
+	}
+	if(c2 == 'Y'){
+		return DRAW + scores[v1-1];
+	}
+	if(v1 == ROCK){
+		return PAPER + WIN;
+	}
+	if(v1 == SCISSORS){
+		return ROCK + WIN;
+	}
+	return SCISSORS + WIN;
+}
+
 int main(int argc, char* argv){
 
 	char col1, col2;
-	int score = 0;
+	int score1, score2 = 0;
 
 	char* line = NULL;
 	size_t len = 0;
@@ -59,13 +83,15 @@ int main(int argc, char* argv){
 	while(getline(&line, &len, fp) != -1) {
 		col1 = line[0];
 		col2 = line[2];
-		score += rps(col1, col2);
+		score1 += rps(col1, col2);
+		score2 += rps2(col1, col2);
 	}
 
 	fclose(fp);
 	free(line);
 
-	printf("score right: %d\n", score);
+	printf("score1: %d\n", score1);
+	printf("score2: %d\n", score2);
 
 	return 0;
 }
