@@ -34,9 +34,7 @@ int rps(char c1, char c2){
 	if((v1 == ROCK && v2 == PAPER) || (v1 == PAPER && v2 == SCISSORS) || (v1 == SCISSORS && v2 == ROCK)) {
 		return WIN + scores[v2-1];
 	}
-	else{
-		return LOSS + scores[v2-1];
-	}
+	return LOSS + scores[v2-1];
 }
 
 int rps2(char c1, char c2){
