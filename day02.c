@@ -1,12 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/*
-ROCK A X 1
-PAPER B Y 2
-SCISSORS C Z 3
-*/
-
 #define HAND_SIZE 3
 
 #define ROCK 1
