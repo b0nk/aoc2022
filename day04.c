@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int is_contained(char* c1, char* c2){
+int is_contained_overlapped(char* c1, char* c2, int contained){
 
         char* ptr1;
         char* ptr2;
@@ -16,7 +16,10 @@ int is_contained(char* c1, char* c2){
         int c2bottom = atoi(c2min);
         int c2top = atoi(c2max);
 
-        return (c1bottom >= c2bottom && c1top <= c2top) || (c2bottom >= c1bottom && c2top <= c1top);
+        if(contained){
+                return (c1bottom >= c2bottom && c1top <= c2top) || (c2bottom >= c1bottom && c2top <= c1top);
+        }
+        return ((c1bottom <= c2top && c1bottom >= c2bottom) || (c2bottom <= c1top && c2bottom >= c1bottom)) || ((c1top >= c2bottom && c1top <= c2top) || (c1top >= c2bottom && c1top <= c2top));
 }
 
 int main(int argc, char* argv){
@@ -25,6 +28,7 @@ int main(int argc, char* argv){
         char* range2;
         char* save_ptr;
         int contained = 0;
+        int overlapped = 0;
 
         char* line = NULL;
         size_t len = 0;
@@ -35,8 +39,11 @@ int main(int argc, char* argv){
         while(getline(&line, &len, fp) != -1) {
                 range1 = strtok_r(line, ",", &save_ptr);
                 range2 = strtok_r(NULL, "\n", &save_ptr);
-                if(is_contained(range1, range2)){
+                if(is_contained_overlapped(strdup(range1), strdup(range2), 1)){
                         contained++;
+                }
+                if(is_contained_overlapped(strdup(range1), strdup(range2), 0)){
+                        overlapped++;
                 }
         }
 
@@ -44,7 +51,7 @@ int main(int argc, char* argv){
         free(line);
 
         printf("part1: %d\n", contained);
-        //printf("part2: %d\n", contained);
+        printf("part2: %d\n", overlapped);
 
         return 0;
 }
