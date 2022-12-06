@@ -19,7 +19,8 @@ int is_contained_overlapped(char* c1, char* c2, int contained){
         if(contained){
                 return (c1bottom >= c2bottom && c1top <= c2top) || (c2bottom >= c1bottom && c2top <= c1top);
         }
-        return ((c1bottom <= c2top && c1bottom >= c2bottom) || (c2bottom <= c1top && c2bottom >= c1bottom)) || ((c1top >= c2bottom && c1top <= c2top) || (c1top >= c2bottom && c1top <= c2top));
+        return ((c1bottom <= c2top && c1bottom >= c2bottom) || (c2bottom <= c1top && c2bottom >= c1bottom)) ||
+                ((c1top >= c2bottom && c1top <= c2top) || (c1top >= c2bottom && c1top <= c2top));
 }
 
 int main(int argc, char* argv){
