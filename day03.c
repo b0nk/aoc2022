@@ -32,21 +32,22 @@ char get_common_item(char* group_items){
 	int length = 0;
 	char* line;
 	char* next_line;
+	char* save_ptr;
 	char* tmp = strdup(group_items);
 
-	line = strtok(group_items, "\n");
+	line = strtok_r(group_items, "\n", &save_ptr);
 	length = strlen(line);
 	for(int i = 0; i < length; i++){
 		char c = line[i];
-		next_line = strtok(NULL, "\n");
+		next_line = strtok_r(NULL, "\n", &save_ptr);
 		if(strchr(next_line, c) != NULL){
-			next_line = strtok(NULL, "\n");
+			next_line = strtok_r(NULL, "\n", &save_ptr);
 			if(strchr(next_line, c) != NULL){
 				return c;
 			}
 		}
 		group_items = strdup(tmp);
-		strtok(group_items, "\n");
+		line = strtok_r(group_items, "\n", &save_ptr);
 	}
 }
 
