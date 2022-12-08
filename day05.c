@@ -5,6 +5,7 @@
 #define STACK_SIZE 100
 
 char** stacks;
+char** stacks_9001;
 char** temp_stacks;
 int n_stacks;
 
@@ -49,18 +50,20 @@ void convert_stack(){
 				continue;
 			}
 			add_to_stack(j, i, c, stacks);
+			add_to_stack(j, i, c, stacks_9001);
 		}
 	}
 	for(int k = 0; k < n_stacks; k++){
 		stacks[k] = strrev(strtok(strdup(stacks[k]), " "));
+		stacks_9001[k] = strrev(strtok(strdup(stacks_9001[k]), " "));
 	}
 }
 
-char* get_top_of_crates(){
+char* get_top_of_crates(char** stack){
 	char* res = malloc(sizeof(char) * n_stacks);
 	char c;
 	for(int i = 0, j = 0; i < n_stacks; i++){
-		c = stacks[i][strlen(stacks[i]) - 1];
+		c = stack[i][strlen(stack[i]) - 1];
 		if(c != '\0'){
 			res[j++] = c;
 		}
@@ -78,6 +81,15 @@ void stack_operation(int qty, int from, int to){
 	stacks[to] = tmp;
 }
 
+void stack_operation_9001(int qty, int from, int to){
+	int pos = strlen(stacks_9001[from]) - qty;
+	char* carry = strdup(&stacks_9001[from][pos]);
+	char* tmp = malloc(sizeof(**stacks_9001) * STACK_SIZE);
+	tmp = strncpy(tmp, stacks_9001[from], pos);
+	stacks_9001[from] = tmp;
+	tmp = strdup(strcat(stacks_9001[to], carry));
+	stacks_9001[to] = tmp;
+}
 
 int main(int argc, char* argv){
 
@@ -113,11 +125,16 @@ int main(int argc, char* argv){
 			strtok(NULL, " ");
 			to = atoi(strtok(NULL, " "));
 			stack_operation(qty, from - 1, to - 1);
+			stack_operation_9001(qty, from - 1, to - 1);
 		}
 		else if(line[0] == '\n'){
 			stacks = malloc(sizeof(*stacks) * n_stacks);
 			for(int i = 0; i < n_stacks; i++){
 				stacks[i] = malloc(sizeof(**stacks) * STACK_SIZE);
+			}
+			stacks_9001 = malloc(sizeof(*stacks_9001) * n_stacks);
+			for(int i = 0; i < n_stacks; i++){
+				stacks_9001[i] = malloc(sizeof(**stacks_9001) * STACK_SIZE);
 			}
 			convert_stack();
 			free(temp_stacks);
@@ -152,13 +169,14 @@ int main(int argc, char* argv){
 		}
 	}
 
-	char* top_of_crates = get_top_of_crates();
+	char* top_of_crates = get_top_of_crates(stacks);
+	char* top_of_crates_9001 = get_top_of_crates(stacks_9001);
 
 	fclose(fp);
 	free(line);
 
 	printf("part1: %s\n", top_of_crates);
-	//printf("part2: %d\n", len);
+	printf("part2: %s\n", top_of_crates_9001);
 
 	return 0;
 }
