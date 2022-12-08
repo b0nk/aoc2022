@@ -71,7 +71,7 @@ char* get_top_of_crates(){
 void stack_operation(int qty, int from, int to){
 	int pos = strlen(stacks[from]) - qty;
 	char* carry = strrev(strdup(&stacks[from][pos]));
-	char* tmp = malloc(sizeof(char) * STACK_SIZE);
+	char* tmp = malloc(sizeof(**stacks) * STACK_SIZE);
 	tmp = strncpy(tmp, stacks[from], pos);
 	stacks[from] = tmp;
 	tmp = strdup(strcat(stacks[to], carry));
