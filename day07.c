@@ -14,13 +14,13 @@ typedef struct {
 } File;
 
 typedef struct Folder {
-   char name[MAX_FILENAME];
-   Folder *parent; 
-   int total_size;
-   int n_files;
-   File *files[MAX_FILES];
-   int n_folders;
-   Folder *folders[MAX_FOLDERS];
+	char name[MAX_FILENAME];
+	Folder *parent; 
+	int total_size;
+	int n_files;
+	File *files[MAX_FILES];
+	int n_folders;
+	Folder *folders[MAX_FOLDERS];
 } Folder;
 
 Folder* create_folder(Folder* parent, char* name){
