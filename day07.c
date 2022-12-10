@@ -8,11 +8,6 @@
 #define MAX_FOLDER_SIZE 100000
 
 
-typedef enum {
-	FILE_TYPE,
-	DIRECTORY_TYPE,
-} Node_Type;
-
 typedef struct {
 	int size;
 	char name[MAX_FILENAME];
@@ -20,12 +15,12 @@ typedef struct {
 
 typedef struct Folder {
    char name[MAX_FILENAME];
-   struct Folder *parent; 
+   Folder *parent; 
    int total_size;
    int n_files;
    File *files[MAX_FILES];
    int n_folders;
-   struct Folder *folders[MAX_FOLDERS];
+   Folder *folders[MAX_FOLDERS];
 } Folder;
 
 Folder* create_folder(Folder* parent, char* name){
