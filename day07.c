@@ -6,6 +6,8 @@
 #define MAX_FOLDERS 50
 #define MAX_FILENAME 100
 #define MAX_FOLDER_SIZE 100000
+#define STORAGE_SPACE 70000000
+#define UPDATE_SIZE 30000000
 
 
 typedef struct {
@@ -15,12 +17,12 @@ typedef struct {
 
 typedef struct Folder {
 	char name[MAX_FILENAME];
-	Folder *parent; 
+	struct Folder *parent; 
 	int total_size;
 	int n_files;
 	File *files[MAX_FILES];
 	int n_folders;
-	Folder *folders[MAX_FOLDERS];
+	struct Folder *folders[MAX_FOLDERS];
 } Folder;
 
 Folder* create_folder(Folder* parent, char* name){
@@ -89,6 +91,17 @@ void calculate_folder_sizes(Folder* cursor, Folder* list[], int* count, int limi
 	}
 }
 
+void calculate_needed_space(Folder* cursor, Folder* list[], int* count, int limit){
+	for(int i = 0; i <= cursor->n_folders - 1; i++){
+		calculate_needed_space(cursor->folders[i], list, count, limit);
+	}
+
+	if(cursor->total_size >= limit){
+		list[*count] = cursor;
+		*count += 1;
+	}
+}
+
 int is_digit(char c){
 	return c >= 48 && c <= 57;
 }
@@ -144,7 +157,22 @@ int main(int argc, char* argv){
 		sum += list[i]->total_size;
 	}
 
+	int free = STORAGE_SPACE - root->total_size;
+	int target = UPDATE_SIZE - free;
+
+	list_n = 0;
+
+	calculate_needed_space(root, list, &list_n, target);
+
+	int result = STORAGE_SPACE;
+	for(int i = 0; i < list_n; i++){
+		if(list[i]->total_size < result){
+			result = list[i]->total_size;
+		}
+	}
+
 	printf("part1: %d\n", sum);
+	printf("part2: %d\n", result);
 
 	return 0;
 }
