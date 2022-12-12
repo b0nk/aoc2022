@@ -4,71 +4,64 @@
 
 #define MAX_VISITED 10000
 
-int is_new_position(int tail_x, int tail_y, int* ut_positions, char* visited[]){
-	size_t l = sizeof(char) * 10;
-	char* position = malloc(l);
-	for(int i = 0; i <= *ut_positions - 1; i++){
-		snprintf(position, l, "%d,%d", tail_x, tail_y);
-		if(strcmp(position, visited[i]) == 0){
-			return 0;
+typedef struct {
+	int x;
+	int y;
+} Knot;
+
+Knot* create_knot(){
+	Knot* k = (Knot*)malloc(sizeof(Knot));
+	k->x = 0;
+	k->y = 0;
+	return k;
+}
+
+void add_to_visited(Knot* tail, Knot* visited[], int* unique_tail_positions){
+	for(int i = 0; i <= *unique_tail_positions - 1; i++){
+		if(visited[i]->x == tail->x && visited[i]->y == tail->y){
+			return;
 		}
 	}
-	return 1;
+	memcpy(visited[*unique_tail_positions], tail, sizeof(Knot));
+	*unique_tail_positions += 1;
 }
 
-int is_adjacent(int* head_x, int* head_y, int* tail_x, int* tail_y){
-	return (*head_x == *tail_x && *head_y == *tail_y) ||
+void move_head(Knot* head, char dir){
+	switch(dir){
+		case 'U':
+			head->y += 1;
+		break;
 
-			(*head_x == *tail_x + 1 && *head_y == *tail_y) ||
-			(*head_x == *tail_x - 1 && *head_y == *tail_y) ||
-			(*head_y == *tail_y + 1 && *head_x == *tail_x) ||
-			(*head_y == *tail_y - 1 && *head_x == *tail_x) ||
+		case 'D':
+			head->y -= 1;
+		break;
 
-			(*head_x == *tail_x + 1 && *head_y == *tail_y + 1) ||
-			(*head_x == *tail_x - 1 && *head_y == *tail_y - 1) ||
-			(*head_x == *tail_x + 1 && *head_y == *tail_y - 1) ||
-			(*head_x == *tail_x - 1 && *head_y == *tail_y + 1);
+		case 'L':
+			head->x -= 1;
+		break;
+
+		case 'R':
+			head->x += 1;
+		break;
+	}
 }
 
-void move_rope(char dir, int steps, int* head_x, int* head_y, int* tail_x, int* tail_y, int* ut_positions, char* visited[]){
-	size_t l = sizeof(char) * 10;
-	for(int i = 0; i < steps; i++){
-		switch(dir){
-			case 'U':
-				*head_y += 1;
-				if(!is_adjacent(head_x, head_y, tail_x, tail_y)){
-					*tail_x = *head_x;
-					*tail_y += 1;
-				}
-			break;
+void move_tail(Knot* head, Knot* tail){
+	int diff_x = head->x - tail->x;
+	int diff_y = head->y - tail->y;
 
-			case 'D':
-				*head_y -= 1;
-				if(!is_adjacent(head_x, head_y, tail_x, tail_y)){
-					*tail_x = *head_x;
-					*tail_y -= 1;
-				}
-			break;
-
-			case 'L':
-				*head_x -= 1;
-				if(!is_adjacent(head_x, head_y, tail_x, tail_y)){
-					*tail_y = *head_y;
-					*tail_x -= 1;
-				}
-			break;
-
-			case 'R':
-				*head_x += 1;
-				if(!is_adjacent(head_x, head_y, tail_x, tail_y)){
-					*tail_y = *head_y;
-					*tail_x += 1;
-				}
-			break;
+	if(abs(diff_x) == 2 || abs(diff_y) == 2){
+		if(diff_x < 0){
+			tail->x -= 1;
 		}
-		if(is_new_position(*tail_x, *tail_y, ut_positions, visited)){
-			snprintf(visited[*ut_positions], l, "%d,%d", *tail_x, *tail_y);
-			*ut_positions += 1;
+		else if(diff_x > 0){
+			tail->x += 1;
+		}
+		if(diff_y < 0){
+			tail->y -= 1;
+		}
+		else if(diff_y > 0){
+			tail->y += 1;
 		}
 	}
 }
@@ -76,15 +69,15 @@ void move_rope(char dir, int steps, int* head_x, int* head_y, int* tail_x, int* 
 int main(int argc, char* argv){
 
 	int unique_tail_positions = 0;
-	int head_x = 0, head_y = 0, tail_x = 0, tail_y = 0;
-	char* visited[MAX_VISITED];
-	size_t l = sizeof(char) * 10;
+	Knot* head = create_knot();
+	Knot* tail = create_knot();
+	Knot* visited[MAX_VISITED];
 
 	for(int i = 0; i < MAX_VISITED; i++){
-		visited[i] = malloc(l);
+		visited[i] = malloc(sizeof(Knot));
 	}
 
-	snprintf(visited[unique_tail_positions], l, "%d,%d", tail_x, tail_y);
+	memcpy(visited[unique_tail_positions], tail, sizeof(Knot));
 	unique_tail_positions += 1;
 
 	char* line = NULL;
@@ -96,7 +89,11 @@ int main(int argc, char* argv){
 	while(getline(&line, &len, fp) != -1) {
 		char dir = line[0];
 		int steps = atoi(strtok(&line[1], "\n"));
-		move_rope(dir, steps, &head_x, &head_y, &tail_x, &tail_y, &unique_tail_positions, visited);
+		for(int i = 0; i < steps; i++){
+			move_head(head, dir);
+			move_tail(head, tail);
+			add_to_visited(tail, visited, &unique_tail_positions);
+		}
 	}
 
 	fclose(fp);
