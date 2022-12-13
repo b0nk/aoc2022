@@ -37,7 +37,7 @@ int main(int argc, char* argv){
 	int line_n = 1;
 	int strength_count = 0;
 	int* strength_list[STRENGTH_SIZE];
-	
+
 	for(int i = 0; i < STRENGTH_SIZE; i++){
 		strength_list[i] = malloc(sizeof(int));
 	}
@@ -47,8 +47,6 @@ int main(int argc, char* argv){
 
 	char* filename = "inputday10";
 	FILE* fp = fopen(filename, "r");
-
-	//printf("part2: ");
 
 	while(getline(&line, &len, fp) != -1) {
 		if(line[0] == 'n'){
