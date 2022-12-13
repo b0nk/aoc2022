@@ -3,6 +3,7 @@
 #include <string.h>
 
 #define MAX_VISITED 10000
+#define ROPE_LENGTH 9
 
 typedef struct {
 	int x;
@@ -68,13 +69,21 @@ void move_tail(Knot* head, Knot* tail){
 
 int main(int argc, char* argv){
 
-	int unique_tail_positions = 0;
+	int unique_tail_positions = 0, unique_rope_positions = 0;
 	Knot* head = create_knot();
 	Knot* tail = create_knot();
 	Knot* visited[MAX_VISITED];
+	Knot* rope[ROPE_LENGTH];
+	Knot* rope_traveled[MAX_VISITED];
 
 	for(int i = 0; i < MAX_VISITED; i++){
 		visited[i] = malloc(sizeof(Knot));
+	}
+	for(int i = 0; i < ROPE_LENGTH; i++){
+		rope[i] = malloc(sizeof(Knot));
+	}
+	for(int i = 0; i < MAX_VISITED; i++){
+		rope_traveled[i] = malloc(sizeof(Knot));
 	}
 
 	memcpy(visited[unique_tail_positions], tail, sizeof(Knot));
@@ -92,7 +101,12 @@ int main(int argc, char* argv){
 		for(int i = 0; i < steps; i++){
 			move_head(head, dir);
 			move_tail(head, tail);
+			move_tail(head, rope[0]);
 			add_to_visited(tail, visited, &unique_tail_positions);
+			for(int j = 1; j < ROPE_LENGTH; j++){
+				move_tail(rope[j-1], rope[j]);
+			}
+			add_to_visited(rope[ROPE_LENGTH-1], rope_traveled, &unique_rope_positions);
 		}
 	}
 
@@ -100,6 +114,7 @@ int main(int argc, char* argv){
 	free(line);
 
 	printf("part1: %d\n", unique_tail_positions);
+	printf("part2: %d\n", unique_rope_positions);
 
 	return 0;
 }
