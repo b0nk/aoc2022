@@ -3,9 +3,10 @@
 #include <string.h>
 #include <stdint.h>
 
-#define MAX_ITEMS 50
+#define MAX_ITEMS 100
 #define N_MONKEYS 8
 #define ROUNDS 20
+#define ROUNDS_P2 10000
 #define TOP_MONKEYS 2
 
 typedef struct {
@@ -83,7 +84,13 @@ void throw_item(Monkey* src, Monkey* target, uint64_t bored){
 	target->n_items += 1;
 }
 
-void play_rounds(int rounds, Monkey monkeys[]){
+void play_rounds(int rounds, Monkey monkeys[], int part1){
+	uint64_t common_multiple = 1;
+	if(!part1){
+		for (size_t i = 0; i < N_MONKEYS; i++){
+			common_multiple *= monkeys[i].test_divisible;
+		}
+	}
 	for(int i = 0; i < rounds; i++){
 		for(int j = 0; j < N_MONKEYS; j++){
 			Monkey* curr = &monkeys[j];
@@ -92,7 +99,13 @@ void play_rounds(int rounds, Monkey monkeys[]){
 				char op = curr->operation;
 				uint64_t op_value = curr->op_value;
 				uint64_t worry = get_worry(item, op, op_value);
-				uint64_t bored = worry / 3;
+				uint64_t bored;
+				if(part1){
+					bored = worry / 3;
+				}
+				else{
+					bored = worry % common_multiple;
+				}
 				if(pass_test(bored, curr->test_divisible)){
 					throw_item(curr, &monkeys[curr->monkey_true], bored);
 				}
@@ -107,7 +120,7 @@ void play_rounds(int rounds, Monkey monkeys[]){
 	}
 }
 
-void process_top(int top[], int v){
+void process_top(uint64_t top[], int v){
 	for(int i = 0; i < TOP_MONKEYS; i++){
 		if(v > top[i]){
 			for(int j = TOP_MONKEYS; j > i; j--){
@@ -122,13 +135,14 @@ void process_top(int top[], int v){
 int main(int argc, char* argv){
 
 	Monkey monkeys[N_MONKEYS];
+	Monkey monkeys_p2[N_MONKEYS];
 	int monkey_idx = -1;
 
 	for(int i = 0; i < N_MONKEYS; i++){
 		monkeys[i] = create_monkey();
 	}
 
-	int top_inspections[TOP_MONKEYS];
+	uint64_t top_inspections[TOP_MONKEYS];
 	for(int i = 0; i < TOP_MONKEYS; i++){
 		top_inspections[i] = 0;
 	}
@@ -176,7 +190,9 @@ int main(int argc, char* argv){
 	fclose(fp);
 	free(line);
 
-	play_rounds(ROUNDS, monkeys);
+	memcpy(monkeys_p2, monkeys, sizeof(monkeys));
+
+	play_rounds(ROUNDS, monkeys, 1);
 
 	for(int i = 0; i < N_MONKEYS; i++){
 		int inspected = monkeys[i].inspected;
@@ -184,12 +200,31 @@ int main(int argc, char* argv){
 		process_top(top_inspections, inspected);
 	}
 
-	int result = 1;
+	uint64_t result = 1;
 	for(int i = 0; i < TOP_MONKEYS; i++){
 		result *= top_inspections[i];
 	}
 
-	printf("part1: %d\n", result);
+	printf("part1: %"PRIu64"\n", result);
+
+	play_rounds(ROUNDS_P2, monkeys_p2, 0);
+
+	for(int i = 0; i < TOP_MONKEYS; i++){
+		top_inspections[i] = 0;
+	}
+
+	for(int i = 0; i < N_MONKEYS; i++){
+		int inspected = monkeys_p2[i].inspected;
+		Monkey* curr = &monkeys_p2[i];
+		process_top(top_inspections, inspected);
+	}
+
+	result = 1;
+	for(int i = 0; i < TOP_MONKEYS; i++){
+		result *= top_inspections[i];
+	}
+
+	printf("part2: %"PRIu64"\n", result);
 
 	return 0;
 }
