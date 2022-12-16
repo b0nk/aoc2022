@@ -87,7 +87,7 @@ void throw_item(Monkey* src, Monkey* target, uint64_t bored){
 void play_rounds(int rounds, Monkey monkeys[], int part1){
 	uint64_t common_multiple = 1;
 	if(!part1){
-		for (size_t i = 0; i < N_MONKEYS; i++){
+		for (int i = 0; i < N_MONKEYS; i++){
 			common_multiple *= monkeys[i].test_divisible;
 		}
 	}
