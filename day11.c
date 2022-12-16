@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <inttypes.h>
 
 #define MAX_ITEMS 100
 #define N_MONKEYS 8
@@ -84,13 +85,7 @@ void throw_item(Monkey* src, Monkey* target, uint64_t bored){
 	target->n_items += 1;
 }
 
-void play_rounds(int rounds, Monkey monkeys[], int part1){
-	uint64_t common_multiple = 1;
-	if(!part1){
-		for (int i = 0; i < N_MONKEYS; i++){
-			common_multiple *= monkeys[i].test_divisible;
-		}
-	}
+void play_rounds(int rounds, Monkey monkeys[], int part1, uint64_t common_multiple){
 	for(int i = 0; i < rounds; i++){
 		for(int j = 0; j < N_MONKEYS; j++){
 			Monkey* curr = &monkeys[j];
@@ -191,12 +186,16 @@ int main(int argc, char* argv){
 	free(line);
 
 	memcpy(monkeys_p2, monkeys, sizeof(monkeys));
+	
+	uint64_t common_multiple = 1;
+	for (int i = 0; i < N_MONKEYS; i++){
+		common_multiple *= monkeys[i].test_divisible;
+	}
 
-	play_rounds(ROUNDS, monkeys, 1);
+	play_rounds(ROUNDS, monkeys, 1, common_multiple);
 
 	for(int i = 0; i < N_MONKEYS; i++){
 		int inspected = monkeys[i].inspected;
-		Monkey* curr = &monkeys[i];
 		process_top(top_inspections, inspected);
 	}
 
@@ -207,7 +206,7 @@ int main(int argc, char* argv){
 
 	printf("part1: %"PRIu64"\n", result);
 
-	play_rounds(ROUNDS_P2, monkeys_p2, 0);
+	play_rounds(ROUNDS_P2, monkeys_p2, 0, common_multiple);
 
 	for(int i = 0; i < TOP_MONKEYS; i++){
 		top_inspections[i] = 0;
@@ -215,7 +214,6 @@ int main(int argc, char* argv){
 
 	for(int i = 0; i < N_MONKEYS; i++){
 		int inspected = monkeys_p2[i].inspected;
-		Monkey* curr = &monkeys_p2[i];
 		process_top(top_inspections, inspected);
 	}
 
