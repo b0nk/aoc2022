@@ -142,13 +142,9 @@ int main(int argc, char* argv){
 		top_inspections[i] = 0;
 	}
 
-	char* line = NULL;
-	size_t len = 0;
+	char line[BUFSIZ];
 
-	char* filename = "inputday11";
-	FILE* fp = fopen(filename, "r");
-
-	while(getline(&line, &len, fp) != -1) {
+	while(fgets(line, BUFSIZ, stdin) != NULL) {
 		if(line[0] == '\n'){
 			continue;
 		}
@@ -181,9 +177,6 @@ int main(int argc, char* argv){
 			add_target_to_monkey(&monkeys[monkey_idx], target_monkey, 0);
 		}
 	}
-
-	fclose(fp);
-	free(line);
 
 	memcpy(monkeys_p2, monkeys, sizeof(monkeys));
 	
