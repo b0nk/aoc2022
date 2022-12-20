@@ -63,21 +63,14 @@ int main(int argc, char* argv){
 	int tree_map[MAP_SIZE][MAP_SIZE];
 	int l = 0;
 
-	char* line = NULL;
-	size_t len = 0;
+	char line[BUFSIZ];
 
-	char* filename = "inputday08";
-	FILE* fp = fopen(filename, "r");
-
-	while(getline(&line, &len, fp) != -1) {
+	while(fgets(line, BUFSIZ, stdin) != NULL) {
 		for(int i = 0; i < MAP_SIZE; i++){
 			tree_map[l][i] = line[i] - '0';
 		}
 		l++;
 	}
-
-	fclose(fp);
-	free(line);
 
 	int visible = MAP_SIZE * 4 - 4;
 	int high_score = 1;
