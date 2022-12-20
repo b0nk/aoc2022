@@ -110,13 +110,9 @@ int main(int argc, char* argv){
 
 	char element[3];
 
-	char* line = NULL;
-	size_t len = 0;
+	char line[BUFSIZ];
 
-	char* filename = "inputday05";
-	FILE* fp = fopen(filename, "r");
-
-	while(getline(&line, &len, fp) != -1) {
+	while(fgets(line, BUFSIZ, stdin) != NULL) {
 		if(line[0] == 'm'){
 			strtok(line, " ");
 			qty = atoi(strtok(NULL, " "));
@@ -151,17 +147,18 @@ int main(int argc, char* argv){
 				}
 			}
 			else {
-				while(strlen(line) >= 4){
-					memcpy(element, line, 3);
+				char* curr_line = strdup(line);
+				while(strlen(curr_line) >= 4){
+					memcpy(element, curr_line, 3);
 					if(element[1] != ' '){
 						add_to_stack(j, count, element[1], temp_stacks);
 					}
-					if(strlen(line) == 4){
-						line = NULL;
+					if(strlen(curr_line) == 4){
+						curr_line = NULL;
 						break;
 					}
 					count++;
-					line = &line[4];
+					curr_line = strdup(&curr_line[4]);
 				}
 				j++;
 				count = 0;
@@ -171,9 +168,6 @@ int main(int argc, char* argv){
 
 	char* top_of_crates = get_top_of_crates(stacks);
 	char* top_of_crates_9001 = get_top_of_crates(stacks_9001);
-
-	fclose(fp);
-	free(line);
 
 	printf("part1: %s\n", top_of_crates);
 	printf("part2: %s\n", top_of_crates_9001);
