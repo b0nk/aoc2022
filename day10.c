@@ -42,13 +42,9 @@ int main(int argc, char* argv){
 		strength_list[i] = malloc(sizeof(int));
 	}
 
-	char* line = NULL;
-	size_t len = 0;
+	char line[BUFSIZ];
 
-	char* filename = "inputday10";
-	FILE* fp = fopen(filename, "r");
-
-	while(getline(&line, &len, fp) != -1) {
+	while(fgets(line, BUFSIZ, stdin) != NULL) {
 		if(line[0] == 'n'){
 			increment_cycle_and_print(&cycle, &rax, &next_strength, &line_n, strength_list, &strength_count);
 		}
@@ -59,9 +55,6 @@ int main(int argc, char* argv){
 			rax += arg;
 		}
 	}
-
-	fclose(fp);
-	free(line);
 
 	int strength_sum = 0;
 	for(int i = 0; i < strength_count; i++){
