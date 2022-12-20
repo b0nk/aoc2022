@@ -2,21 +2,20 @@
 #include <stdlib.h>
 
 #define LENGTH 3
-int top3[LENGTH];
 
-void initialize_top3(){
+void initialize_top(int top[]){
 	for(int i = 0; i < LENGTH; i++){
-		top3[i] = 0;
+		top[i] = 0;
 	}
 }
 
-void process_top3(int v){
+void process_top(int v, int top[]){
 	for(int i = 0; i < LENGTH; i++){
-		if(v > top3[i]){
+		if(v > top[i]){
 			for(int j = LENGTH; j > i; j--){
-				top3[j] = top3[j-1];
+				top[j] = top[j-1];
 			}
-			top3[i] = v;
+			top[i] = v;
 			break;
 		}
 	}
@@ -24,21 +23,18 @@ void process_top3(int v){
 
 int main(int argc, char* argv){
 
-	int current_max, current_sum, current_value = 0;
+	int current_max, current_sum, current_value, top_total = 0;
+	int top[LENGTH];
 
-	initialize_top3();
+	initialize_top(top);
 
-	char* line = NULL;
-	size_t len = 0;
+	char line[BUFSIZ];
 
-	char* filename = "inputday01";
-	FILE* fp = fopen(filename, "r");
-
-	while(getline(&line, &len, fp) != -1) {
-		if((char) *line == '\n'){
+	while(fgets(line, BUFSIZ, stdin) != NULL) {
+		if(line[0] == '\n'){
 			if(current_sum > current_max){
 				current_max = current_sum;
-				process_top3(current_max);
+				process_top(current_max, top);
 			}
 			current_sum = 0;
 		}
@@ -48,17 +44,12 @@ int main(int argc, char* argv){
 		}
 	}
 
-	fclose(fp);
-	free(line);
-
-	int top3_total = 0;
-
 	for(int i = 0; i < LENGTH; i++){
-		top3_total += top3[i];
+		top_total += top[i];
 	}
 
-	printf("max: %d\n", current_max);
-	printf("top 3 summed: %d\n", top3_total);
+	printf("part1: %d\n", current_max);
+	printf("part2: %d\n", top_total);
 
 	return 0;
 }
