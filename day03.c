@@ -59,13 +59,9 @@ int main(int argc, char* argv){
 	int counter = 0;
 	char* grouped = (char*)malloc(sizeof(char) * 1000);
 
-	char* line = NULL;
-	size_t len = 0;
+	char line[BUFSIZ];
 
-	char* filename = "inputday03";
-	FILE* fp = fopen(filename, "r");
-
-	while(getline(&line, &len, fp) != -1) {
+	while(fgets(line, BUFSIZ, stdin) != NULL) {
 		shared = get_shared_item(line);
 		priority += get_priority(shared);
 
@@ -78,9 +74,6 @@ int main(int argc, char* argv){
 		}
 		counter++;
 	}
-
-	fclose(fp);
-	free(line);
 
 	if(counter % 3 == 0){
 		shared = get_common_item(grouped);
