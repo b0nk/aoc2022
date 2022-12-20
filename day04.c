@@ -31,13 +31,9 @@ int main(int argc, char* argv){
         int contained = 0;
         int overlapped = 0;
 
-        char* line = NULL;
-        size_t len = 0;
+        char line[BUFSIZ];
 
-        char* filename = "inputday04";
-        FILE* fp = fopen(filename, "r");
-
-        while(getline(&line, &len, fp) != -1) {
+        while(fgets(line, BUFSIZ, stdin) != NULL) {
                 range1 = strtok_r(line, ",", &save_ptr);
                 range2 = strtok_r(NULL, "\n", &save_ptr);
                 if(is_contained_overlapped(strdup(range1), strdup(range2), 1)){
@@ -47,9 +43,6 @@ int main(int argc, char* argv){
                         overlapped++;
                 }
         }
-
-        fclose(fp);
-        free(line);
 
         printf("part1: %d\n", contained);
         printf("part2: %d\n", overlapped);
