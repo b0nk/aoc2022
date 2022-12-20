@@ -114,13 +114,9 @@ int main(int argc, char* argv){
 	char* command;
 	char* arg;
 
-	char* line = NULL;
-	size_t len = 0;
+	char line[BUFSIZ];
 
-	char* filename = "inputday07";
-	FILE* fp = fopen(filename, "r");
-
-	while(getline(&line, &len, fp) != -1) {
+	while(fgets(line, BUFSIZ, stdin) != NULL) {
 		if(line[0] == '$'){
 			command = strtok(strdup(&line[2]), " ");
 			if(strcmp(command, "ls") == 0){
@@ -143,9 +139,6 @@ int main(int argc, char* argv){
 			Folder* f = create_folder(cursor, col2);
 		}
 	}
-
-	fclose(fp);
-	free(line);
 
 	int sum = 0;
 	int list_n = 0;
