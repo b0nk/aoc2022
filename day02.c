@@ -18,7 +18,7 @@ const int scores[HAND_SIZE] = {1, 2, 3};
 int get_position(char c, const char* hand[HAND_SIZE]){
 	for(int i = 0; i < HAND_SIZE; i++){
 		if(c == *hand[i]){
-			return i+1;
+			return i + 1;
 		}
 	}
 }
@@ -64,26 +64,19 @@ int rps2(char c1, char c2){
 int main(int argc, char* argv){
 
 	char col1, col2;
-	int score1, score2 = 0;
+	int score1 = 0, score2 = 0;
 
-	char* line = NULL;
-	size_t len = 0;
+	char line[BUFSIZ];
 
-	char* filename = "inputday02";
-	FILE* fp = fopen(filename, "r");
-
-	while(getline(&line, &len, fp) != -1) {
+	while(fgets(line, BUFSIZ, stdin) != NULL) {
 		col1 = line[0];
 		col2 = line[2];
 		score1 += rps(col1, col2);
 		score2 += rps2(col1, col2);
 	}
 
-	fclose(fp);
-	free(line);
-
-	printf("score1: %d\n", score1);
-	printf("score2: %d\n", score2);
+	printf("part1: %d\n", score1);
+	printf("part2: %d\n", score2);
 
 	return 0;
 }
