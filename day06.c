@@ -40,19 +40,12 @@ int main(int argc, char* argv){
 	int marker_pos = 0;
 	int msg_pos = 0;
 
-	char* line = NULL;
-	size_t len = 0;
+	char line[BUFSIZ];
 
-	char* filename = "inputday06";
-	FILE* fp = fopen(filename, "r");
-
-	while(getline(&line, &len, fp) != -1) {
+	while(fgets(line, BUFSIZ, stdin) != NULL) {
 		marker_pos = find_data(line, PACKET);
 		msg_pos = find_data(line, MESSAGE);
 	}
-
-	fclose(fp);
-	free(line);
 
 	printf("part1: %d\n", marker_pos);
 	printf("part2: %d\n", msg_pos);
