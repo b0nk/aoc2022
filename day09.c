@@ -89,13 +89,9 @@ int main(int argc, char* argv){
 	memcpy(visited[unique_tail_positions], tail, sizeof(Knot));
 	unique_tail_positions += 1;
 
-	char* line = NULL;
-	size_t len = 0;
+	char line[BUFSIZ];
 
-	char* filename = "inputday09";
-	FILE* fp = fopen(filename, "r");
-
-	while(getline(&line, &len, fp) != -1) {
+	while(fgets(line, BUFSIZ, stdin) != NULL) {
 		char dir = line[0];
 		int steps = atoi(strtok(&line[1], "\n"));
 		for(int i = 0; i < steps; i++){
@@ -109,9 +105,6 @@ int main(int argc, char* argv){
 			add_to_visited(rope[ROPE_LENGTH-1], rope_traveled, &unique_rope_positions);
 		}
 	}
-
-	fclose(fp);
-	free(line);
 
 	printf("part1: %d\n", unique_tail_positions);
 	printf("part2: %d\n", unique_rope_positions);
